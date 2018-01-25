@@ -19,19 +19,23 @@ public class WordReader extends BaseRichSpout {
     private boolean completed = false;
 
     // Called when Storm detects a tuple emitted successfully
+    @Override
     public void ack(Object msgId) {
         System.out.println("SUCCESS: " + msgId);
     }
 
     // Called when a tuple fails to be emitted
+    @Override
     public void fail(Object msgId) {
         System.out.println("ERROR: " + msgId);
     }
 
+    @Override
     public void close() {
     }
 
     // Called when a task for this component is initialized within a worker on the cluster.
+    @Override
     public void open(Map conf, TopologyContext context,
                      SpoutOutputCollector collector) {
         try {
@@ -43,6 +47,7 @@ public class WordReader extends BaseRichSpout {
         this.collector = collector;
     }
 
+    @Override
     public void nextTuple() {
         /**
          * NextTuple either emits a new tuple into the topology or simply returns if there are no new tuples to emit
@@ -74,6 +79,7 @@ public class WordReader extends BaseRichSpout {
     }
 
     // The declareOutputFields function declares the output fields ("line") for the component.
+    @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declare(new Fields("line"));
     }

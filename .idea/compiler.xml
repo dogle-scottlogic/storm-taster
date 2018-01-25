@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="storm-taster" target="1.5" />
+      <module name="storm-taster" target="9" />
     </bytecodeTargetLevel>
   </component>
 </project>

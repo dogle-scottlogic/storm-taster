@@ -43,6 +43,17 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
+        <!-- Twitter4j -->
+        <dependency>
+            <groupId>org.twitter4j</groupId>
+            <artifactId>twitter4j-core</artifactId>
+            <version>4.0.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.twitter4j</groupId>
+            <artifactId>twitter4j-stream</artifactId>
+            <version>4.0.5</version>
+        </dependency>
     </dependencies>
 
 </project>

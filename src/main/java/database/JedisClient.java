@@ -1,6 +1,6 @@
 package database;
 
-import redis.clients.jedis.*;
+import redis.clients.jedis.Jedis;
 
 import java.util.Set;
 
@@ -29,6 +29,14 @@ public class JedisClient {
             printError(e.getMessage());
         }
         return null;
+    }
+
+    public void clearDatabase() {
+        try {
+            jedis.flushAll();
+        } catch (Exception e) {
+            printError(e.getMessage());
+        }
     }
 
     // print all the values in the database

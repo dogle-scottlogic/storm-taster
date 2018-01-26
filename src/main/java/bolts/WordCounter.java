@@ -1,5 +1,6 @@
 package bolts;
 
+import database.JedisClient;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.BasicOutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -10,36 +11,31 @@ import java.util.Map;
 
 public class WordCounter extends BaseBasicBolt {
 
-    Integer id;
-    String name;
-    Map<String, Integer> counters;
-
-    @Override
-    // This should be called when the cluster is shutdown in Local mode only
-    // This is not guaranteed
-    public void cleanup() {
-        System.out.println("-- Word Counter ["+name+"-"+id+"] --");
-        for(Map.Entry<String, Integer> entry : counters.entrySet()){
-            System.out.println(entry.getKey()+": "+entry.getValue());
-        }
-    }
+    private Integer id;
+    private String name;
+    private JedisClient jedis;
 
     @Override
     // Called before the bolt is run
     public void prepare(Map conf, TopologyContext context) {
         this.name = context.getThisComponentId();
         this.id = context.getThisTaskId();
+        try {
+            this.jedis = new JedisClient(conf.get("host").toString(), Integer.parseInt(conf.get("port").toString()));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
     public void execute(Tuple input, BasicOutputCollector collector) {
         String word = input.getString(0);
 
-        if(!counters.containsKey(word)){
-            counters.put(word, 1);
-        }else{
-            Integer c = counters.get(word) + 1;
-            counters.put(word, c);
+        if (jedis.getValue(word) == null) {
+            jedis.setTuple(word, "1");
+        } else {
+            Integer c = Integer.parseInt(jedis.getValue(word)) + 1;
+            jedis.setTuple(word, c.toString());
         }
     }
 

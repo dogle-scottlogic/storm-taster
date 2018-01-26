@@ -16,6 +16,7 @@ public class WordCounter extends BaseBasicBolt {
 
     @Override
     // This should be called when the cluster is shutdown in Local mode only
+    // This is not guaranteed
     public void cleanup() {
         System.out.println("-- Word Counter ["+name+"-"+id+"] --");
         for(Map.Entry<String, Integer> entry : counters.entrySet()){

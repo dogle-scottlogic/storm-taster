@@ -38,7 +38,6 @@ public class TopologyMain {
         config.put("wordsFile", path);
         config.put("host", host);
         config.put("port", port.toString());
-        config.setDebug(true);
 
         // Run topology
         LocalCluster localCluster = new LocalCluster();

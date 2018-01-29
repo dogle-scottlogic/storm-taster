@@ -11,15 +11,11 @@ import java.util.Map;
 
 public class WordCounter extends BaseBasicBolt {
 
-    private Integer id;
-    private String name;
     private JedisClient jedis;
 
     @Override
     // Called before the bolt is run
     public void prepare(Map conf, TopologyContext context) {
-        this.name = context.getThisComponentId();
-        this.id = context.getThisTaskId();
         try {
             this.jedis = new JedisClient(conf.get("host").toString(), Integer.parseInt(conf.get("port").toString()));
         } catch (Exception e) {

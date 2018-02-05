@@ -1,0 +1,48 @@
+.chart-label {
+    font-size: 1.5em;
+    line-height: normal;
+    color: black;
+}
+
+.chart {
+    margin: 10px 0;
+    width: 100%;
+    height: 250px;
+}
+
+.chart svg {
+    overflow: visible !important;
+}
+
+.chart.large {
+    height: 400px;
+}
+
+.plot-area {
+    background-color: white;
+}
+
+.y-axis-label {
+    white-space: nowrap;
+}
+
+.bar {
+    fill: #9cf;
+    stroke-width: 0;
+}
+
+.plot-area {
+    background-color: white;
+    overflow: hidden;
+}
+
+d3fc-svg svg {
+    overflow: visible !important;
+}
+
+.annotation-line>line {
+    fill-opacity: 0;
+    stroke: #999;
+    stroke-width: 1;
+    stroke-dasharray: 3, 3;
+}

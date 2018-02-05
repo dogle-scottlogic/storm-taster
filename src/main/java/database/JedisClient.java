@@ -7,6 +7,7 @@ import java.util.Set;
 public class JedisClient {
 
     private Jedis jedis;
+    private final String MAP_NAME = "category";
 
     public JedisClient(String host, int port) {
         this.jedis = new Jedis(host, port);
@@ -29,6 +30,34 @@ public class JedisClient {
             printError(e.getMessage());
         }
         return null;
+    }
+
+    public void printAllCats() {
+        try {
+            System.out.println(jedis.hgetAll(MAP_NAME));
+        } catch (Exception e) {
+            printError(e.getMessage());
+        }
+    }
+
+    public void addToMap(String category, Double pledge) {
+        try {
+            String oldPledge = jedis.hget(MAP_NAME, category);
+            if (oldPledge != null) {
+                pledge += Double.parseDouble(oldPledge);
+            }
+            jedis.hset(MAP_NAME, category, pledge.toString());
+        } catch (Exception e) {
+            printError(e.getMessage());
+        }
+    }
+
+    public void  deleteAll() {
+        try{
+            jedis.flushAll();
+        }catch (Exception e) {
+            printError(e.getMessage());
+        }
     }
 
     // print all the values in the database

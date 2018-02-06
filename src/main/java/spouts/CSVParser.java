@@ -36,6 +36,11 @@ public class CSVParser extends BaseRichSpout {
     }
 
     @Override
+    public void ack(Object msgId) {
+        System.out.println("SUCCESS: " + msgId);
+    }
+
+    @Override
     public void nextTuple() {
         /**
          * NextTuple either emits a new tuple into the topology or simply returns if there are no new tuples to emit
@@ -55,6 +60,9 @@ public class CSVParser extends BaseRichSpout {
                 if(reader.getLinesRead() != 1) {
                     List<String> emitValue = new ArrayList<String>(Arrays.asList(line));
                     this.collector.emit(new Values(emitValue));
+                    for(int i = 1000; i > 0; i--) {
+                        System.out.println(i + " waiting...");
+                    }
                 }
             }
         } catch (Exception e) {

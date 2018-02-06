@@ -1,6 +1,7 @@
 import React from 'react';
 import Graph from './graph';
 import { getCategories } from '../api/categories';
+import { subscribeToCategories } from '../api/categories';
 
 class GraphContainer extends React.Component {
 
@@ -13,22 +14,37 @@ class GraphContainer extends React.Component {
 
     componentWillMount() {
         const categoriesFromApi = [];
-        getCategories().then((result) => {
-            for (let prop in result) {
-                if (result.hasOwnProperty(prop)) {
+        // getCategories().then((result) => {
+        //     for (let prop in result) {
+        //         if (result.hasOwnProperty(prop)) {
+        //             categoriesFromApi.push({
+        //                 "category": prop,
+        //                 "value": this.convertFromENotation(result[prop], prop)
+        //             });
+        //         }
+        //     }
+        //     this.setState({ categories: categoriesFromApi });
+        // }).catch((err) => console.log(err));
+
+        // Subscribe to socket
+        subscribeToCategories((err, cats) => {
+            for (let category in cats) {
+                if (cats.hasOwnProperty(category)) {
                     categoriesFromApi.push({
-                        "category": prop,
-                        "value": this.convertFromENotation(result[prop], prop)
+                        category,
+                        "value": this.convertFromENotation(cats[category], category)
                     });
                 }
             }
             this.setState({ categories: categoriesFromApi });
-        }).catch((err) => console.log(err));
+        });
     }
 
     render() {
         return (
-            <Graph categories={this.state.categories}/>
+            <Graph
+                categories={this.state.categories}
+            />
         );
     }
 

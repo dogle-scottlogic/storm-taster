@@ -29,7 +29,7 @@ public class TopologyMain {
     public static void runCSVAnalisisTopology() throws InterruptedException {
         // Topology definition
         TopologyBuilder builder = new TopologyBuilder();
-        builder.setSpout("csv-parser", new CSVParser());
+        builder.setSpout("csv-parser", new CSVParser(),1);
         //The spout and the bolts are connected using shuffleGroupings. This type of grouping
         //tells Storm to send messages from the source node to target nodes in randomly distributed
         //fashion.

@@ -30,6 +30,7 @@
     "nodemon": "^1.14.12",
     "redis": "^2.8.0",
     "sass-loader": "^6.0.6",
+    "socket.io": "^2.0.4",
     "style-loader": "^0.20.1",
     "webpack": "^3.10.0"
   },
@@ -40,6 +41,7 @@
     "d3fc": "^13.1.1",
     "html-loader": "^0.5.5",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "socket.io-client": "^2.0.4"
   }
 }

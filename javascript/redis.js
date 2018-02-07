@@ -19,16 +19,23 @@ function connect() {
     return connection;
 }
 
-export function getCatergories() {
-    const categories = new Promise((res, rej) => {
+export function getKSData() {
+    const ks_data = [new Promise((res, rej) => {
         client.hgetall('category', (err, obj) => {
             if (err) {
                 return (rej(err));
             }
             return res(obj);
         });
-    });
-    return categories;
+    }), new Promise((res, rej) => {
+            client.hgetall('backers', (err, obj) => {
+                if (err) {
+                    return (rej(err));
+                }
+                return res(obj);
+            });    
+    })];
+    return ks_data;
 }
 
 export default connect;

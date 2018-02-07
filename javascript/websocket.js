@@ -1,6 +1,6 @@
 import io from 'socket.io';
 import { createServer } from 'http';
-import connect, { getCatergories } from './redis';
+import connect, { getKSData } from './redis';
 
 let socket = null;
 
@@ -8,12 +8,11 @@ const init = function (app) {
     var server = createServer(app);
     io(server).on('connection', (client) => {
         socket = client;
-        socket.on('subscribeToCategories', (interval) => {
-            console.log('client is subscribing to categories with interval ', interval);
+        socket.on('subscribeToKickStarterData', (interval) => {
+            console.log('client is subscribing to Kick Starter Data with interval ', interval);
             setInterval(() => {
-                console.log("calling db");
-                getCatergories().then((cats) =>
-                    client.emit('categories', cats)
+                Promise.all(getKSData()).then((data) =>
+                    client.emit('ks_data', data)
                 );
             }, interval);
         });

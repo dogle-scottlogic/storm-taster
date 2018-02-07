@@ -1,54 +1,70 @@
 import React from 'react';
 import Graph from './graph';
 import { getCategories } from '../api/categories';
-import { subscribeToCategories } from '../api/categories';
+import { subscribeToKSData } from '../api/categories';
+import * as d3 from 'd3';
 
 class GraphContainer extends React.Component {
 
     constructor(props) {
         super(props);
+        this.valueformatter = d3.format("$.0f");
         this.state = {
-            categories: []
+            categories: [],
+            backers: []
         }
     }
 
     componentWillMount() {
-        const categoriesFromApi = [];
-        // getCategories().then((result) => {
-        //     for (let prop in result) {
-        //         if (result.hasOwnProperty(prop)) {
-        //             categoriesFromApi.push({
-        //                 "category": prop,
-        //                 "value": this.convertFromENotation(result[prop], prop)
-        //             });
-        //         }
-        //     }
-        //     this.setState({ categories: categoriesFromApi });
-        // }).catch((err) => console.log(err));
-
         // Subscribe to socket
-        subscribeToCategories((err, cats) => {
-            for (let category in cats) {
-                if (cats.hasOwnProperty(category)) {
-                    categoriesFromApi.push({
-                        category,
-                        "value": this.convertFromENotation(cats[category], category)
-                    });
-                }
-            }
-            this.setState({ categories: categoriesFromApi });
+        subscribeToKSData((err, ks_data) => {
+            this.parseData(
+                ks_data[0],
+                this.convertFromENotation,
+                (convertedData) => this.setState({ categories: convertedData }));
+            this.parseData(
+                ks_data[1],
+                (value) => value != "" && parseInt(value),
+                (convertedData) => this.setState({ backers: convertedData }));
         });
     }
 
     render() {
         return (
-            <Graph
-                categories={this.state.categories}
-            />
+            <div className="charts">
+                <Graph
+                    className={"categories-chart"}    
+                    ksData={this.state.categories}
+                    valueformatter={this.valueformatter}
+                    label={"Kick Starter - Total funding by category (USD)"}
+                    yLabel={"Million US Dollars"}
+                >
+                </Graph>
+                <Graph
+                    className={"backers-chart"}        
+                    ksData={this.state.backers}
+                    label={"Kick Starter - Total backers by category"}
+                    yLabel="No. of Backers"
+                >
+                </Graph>
+            </div>    
         );
     }
 
-    convertFromENotation(eNumber, prop) {
+    parseData(data, converter, setState) {
+        const convertedData = [];
+        for (let prop in data) {
+            if (data.hasOwnProperty(prop)) {
+                convertedData.push({
+                    category: prop,
+                    "value": converter(data[prop])
+                });
+            }
+        }
+        setState(convertedData);
+    } 
+
+    convertFromENotation(eNumber) {
         const parts = eNumber.split('E');
         let result = 0;
         parts.length < 2 ? result = parseFloat(eNumber) :

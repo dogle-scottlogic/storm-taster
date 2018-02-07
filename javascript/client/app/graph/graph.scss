@@ -1,3 +1,17 @@
+body {
+    overflow: hidden;
+}
+
+.charts {
+    display: flex;
+    justify-content: space-around;
+}
+
+.graph {
+    margin: 30px;
+    width: 100%;
+}
+
 .chart-label {
     font-size: 1.5em;
     line-height: normal;
@@ -45,4 +59,14 @@ d3fc-svg svg {
     stroke: #999;
     stroke-width: 1;
     stroke-dasharray: 3, 3;
+}
+
+.backers-chart {
+    .y-axis-label {
+        padding-left: 70px;
+    }
+
+    .bar {
+        fill: #f99;
+    }
 }

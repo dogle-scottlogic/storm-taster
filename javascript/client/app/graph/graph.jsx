@@ -4,45 +4,48 @@ import * as fc from 'd3fc'
 
 import './graph.scss';
 
-const width = 500;
-const height = 500;
-let graph;
+const width = 250;
+const height = 250;
 let tooltip = null;
 
-class Graph extends React.Component { 
+class Graph extends React.Component {
 
     constructor(props) {
         super(props);
+        this.graph = null;
         this.setRef = this.setRef.bind(this);
+    }
+
+    componentWillMount() {
+        this.setRef.bind(this);
     }
 
     render() {
         return (
-            <div ref={this.setRef}>
-                {graph && this.renderChart()}
+            <div className={`graph ${this.props.className}`} ref={this.setRef}>
+                {this.graph && this.renderChart()}
             </div>
         );
     }
 
     renderChart() {
-        const data = this.props.categories;
+        const data = this.props.ksData;
         var yExtent = fc.extentLinear()
             .include([0])
             .pad([0, 0.5])
             .accessors([function (d) { return d.value; }]);
-        var valueformatter = d3.format("$.0f");
 
         // START
         var chart = fc.chartSvgCartesian(
             d3.scaleBand(),
             d3.scaleLinear())
-            .chartLabel("Kick Starter - Total funding by category (USD)")
+            .chartLabel(this.props.label)
             .xDomain(data.map(function (d) { return d.category; }))
             .yDomain(yExtent(data))
             .yTicks(5)
             .xPadding(0.2)
-            .yTickFormat(valueformatter)
-            .yLabel("Million US Dollars")
+            .yTickFormat(this.props.valueformatter)
+            .yLabel(this.props.yLabel)
             .yNice();
         // END
 
@@ -57,7 +60,7 @@ class Graph extends React.Component {
                     tooltip.style("visibility", "visible");
                     tooltip.style("top", bar.y - tooltip.node().getBoundingClientRect().height);
                     tooltip.style("left", left);
-                    tooltip.text("$" + node.value + "M");
+                    tooltip.text(node.value);
                 })
                 selection.on("mouseout", function (node, b, c) {
                     tooltip.style("visibility", "hidden");
@@ -66,19 +69,20 @@ class Graph extends React.Component {
 
         chart.plotArea(series);
         if (data.length > 0) {
-            d3.select(graph)
+            d3.select(this.graph)
                 .datum(data)
                 .call(chart);
         }
     }
 
     setRef(ref) {
-        graph = ref;
-        tooltip = d3.select(graph)
+        this.graph = ref;
+        tooltip = d3.select(this.graph)
             .append("div")
             .style("position", "absolute")
             .style("z-index", "10")
             .style("visibility", "hidden")
+            .attr("class", "rollover")
             .text("");
         this.renderChart();
     }

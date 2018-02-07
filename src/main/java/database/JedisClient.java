@@ -7,7 +7,6 @@ import java.util.Set;
 public class JedisClient {
 
     private Jedis jedis;
-    private final String MAP_NAME = "category";
 
     public JedisClient(String host, int port) {
         this.jedis = new Jedis(host, port);
@@ -32,21 +31,33 @@ public class JedisClient {
         return null;
     }
 
-    public void printAllCats() {
+    public void printAllCats(String mapName) {
         try {
-            System.out.println(jedis.hgetAll(MAP_NAME));
+            System.out.println(jedis.hgetAll(mapName));
         } catch (Exception e) {
             printError(e.getMessage());
         }
     }
 
-    public void addToMap(String category, Double pledge) {
+    public void addToMap(String mapName, String category, Double pledge) {
         try {
-            String oldPledge = jedis.hget(MAP_NAME, category);
+            String oldPledge = jedis.hget(mapName, category);
             if (oldPledge != null) {
                 pledge += Double.parseDouble(oldPledge);
             }
-            jedis.hset(MAP_NAME, category, pledge.toString());
+            jedis.hset(mapName, category, pledge.toString());
+        } catch (Exception e) {
+            printError(e.getMessage());
+        }
+    }
+
+    public void addToMap(String mapName, String category, Integer pledge) {
+        try {
+            String oldPledge = jedis.hget(mapName, category);
+            if (oldPledge != null) {
+                pledge += Integer.parseInt(oldPledge);
+            }
+            jedis.hset(mapName, category, pledge.toString());
         } catch (Exception e) {
             printError(e.getMessage());
         }

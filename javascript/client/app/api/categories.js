@@ -11,10 +11,10 @@ export async function getCategories() {
         .catch((err) => console.log(err));
 }
 
-export function subscribeToCategories(cb) {
+export function subscribeToKSData(cb) {
     try {
-        socket.on('categories', cats => cb(null, cats));
-        socket.emit('subscribeToCategories', 1000);
+        socket.on('ks_data', ks_data => cb(null, ks_data));
+        socket.emit('subscribeToKickStarterData', 1000);
     } catch (e) {
         console.log(e);
     }

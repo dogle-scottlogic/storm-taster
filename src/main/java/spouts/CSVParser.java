@@ -6,7 +6,6 @@ import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseRichSpout;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -18,9 +17,14 @@ import com.opencsv.CSVReader;
 
 public class CSVParser extends BaseRichSpout {
 
+    private String filePath;
     private SpoutOutputCollector collector;
     private FileReader fileReader;
     private boolean completed = false;
+
+    public CSVParser(String filePath) {
+        this.filePath = filePath;
+    }
 
     // Called when a task for this component is initialized within a worker on the cluster.
     @Override
@@ -28,7 +32,7 @@ public class CSVParser extends BaseRichSpout {
                      SpoutOutputCollector collector) {
         try {
             // new reader with the words.txt file passed from the config
-            this.fileReader = new FileReader(conf.get("csvFile").toString());
+            this.fileReader = new FileReader(filePath);
         } catch (FileNotFoundException e) {
             throw new RuntimeException("Error reading file: " + e.getMessage());
         }
@@ -60,9 +64,6 @@ public class CSVParser extends BaseRichSpout {
                 if(reader.getLinesRead() != 1) {
                     List<String> emitValue = new ArrayList<String>(Arrays.asList(line));
                     this.collector.emit(new Values(emitValue));
-                    for(int i = 1000; i > 0; i--) {
-                        System.out.println(i + " waiting...");
-                    }
                 }
             }
         } catch (Exception e) {
